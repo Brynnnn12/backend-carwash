@@ -2,50 +2,53 @@ const jwt = require("jsonwebtoken");
 const { User, Role } = require("../models");
 
 exports.authMiddleware = async (req, res, next) => {
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
-  }
-  token = req.cookies.jwt;
-
-  if (!token) {
-    return next(
-      res.status(401).json({
-        status: "401",
-        message: "Anda belum login, silahkan login terlebih dahulu",
-      })
-    );
-  }
-
-  let decoded;
   try {
-    decoded = await jwt.verify(token, process.env.JWT_SECRET);
-  } catch (error) {
-    return next(
-      res.status(401).json({
-        status: "401",
-        message: "Token tidak valid",
-      })
-    );
-  }
-  // console.log(decoded);
+    let token;
 
-  const currentUser = await User.findByPk(decoded.id);
-  if (!currentUser) {
-    return next(
-      res.status(401).json({
+    // Cek apakah token ada di header Authorization atau cookies
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1]; // Ambil token setelah "Bearer"
+    } else if (req.cookies && req.cookies.jwt) {
+      token = req.cookies.jwt; // Ambil token dari cookies jika ada
+    }
+
+    // Jika token tidak ada, kirim respons 401 (Unauthorized)
+    if (!token) {
+      return res.status(401).json({
+        status: "401",
+        message: "Anda belum login, silakan login terlebih dahulu",
+      });
+    }
+
+    // Verifikasi token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Cari user berdasarkan ID yang ada di token
+    // Ambil user dari database dengan role-nya
+    const currentUser = await User.findByPk(decoded.id, {
+      include: [{ model: Role, as: "role", attributes: ["name"] }], // Ambil nama role dari relasi
+    });
+
+    console.log("User Data:", currentUser.toJSON()); // Tambahkan log ini untuk debugging
+    if (!currentUser) {
+      return res.status(401).json({
         status: "401",
         message: "User tidak ditemukan",
-      })
-    );
-  }
-  // console.log("nama user", currentUser.name);
+      });
+    }
 
-  req.user = currentUser;
-  next();
+    // Tambahkan user ke dalam `req.user`
+    req.user = currentUser;
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      status: "401",
+      message: "Token tidak valid atau sudah kedaluwarsa",
+    });
+  }
 };
 
 exports.permissionMiddleware = (...roles) => {

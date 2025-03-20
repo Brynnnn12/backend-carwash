@@ -1,6 +1,6 @@
 const { User, Profile } = require("../models");
 const { createSendToken } = require("../config/jwt");
-const { registerSchema, loginSchema } = require("../validators/authValidator");
+const { registerSchema, loginSchema } = require("../validations/authValidator");
 
 exports.register = async (req, res) => {
   try {

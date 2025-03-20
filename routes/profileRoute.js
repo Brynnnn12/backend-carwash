@@ -14,7 +14,7 @@ const upload = require("../utils/fileUpload");
 router.get("/", authMiddleware, getProfile);
 
 // **Route untuk upload Avatar**
-router.post("/", upload.single("avatar"), createProfile);
+router.post("/", authMiddleware, upload.single("avatar"), createProfile);
 router.put("/", authMiddleware, upload.single("avatar"), updateProfile);
 
 module.exports = router;

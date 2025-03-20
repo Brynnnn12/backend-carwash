@@ -1,13 +1,12 @@
 const morgan = require("morgan");
-const logger = require("./logging"); // Impor logger dari Winston
+const logger = require("./logging");
 
-// Tentukan format log berdasarkan environment
+// Tentukan format log berdasarkan mode aplikasi
 const morganFormat = process.env.NODE_ENV === "production" ? "combined" : "dev";
 
-// Arahkan log Morgan ke Winston
+// Gunakan Winston sebagai output log Morgan
 const winstonStream = {
   write: (message) => logger.info(message.trim()),
 };
 
-// Export middleware Morgan
 module.exports = morgan(morganFormat, { stream: winstonStream });

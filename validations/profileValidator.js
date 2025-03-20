@@ -8,7 +8,6 @@ const profileSchema = Joi.object({
     .min(10)
     .max(15)
     .required(),
-  userId: Joi.required(),
 });
 
 module.exports = { profileSchema };
