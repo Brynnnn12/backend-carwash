@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     paymentProof: {
-      type: DataTypes.string, // Menyimpan URL atau path bukti pembayaran
+      type: DataTypes.STRING, // Menyimpan URL atau path bukti pembayaran
       allowNull: false
     },
     isPaid: {

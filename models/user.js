@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "role",
         onDelete: "SET NULL", // Jika role dihapus, user tidak ikut terhapus
       });
+      User.hasOne(models.Profile, {
+        foreignKey: "userId",
+        as: "profile", // Gunakan alias agar lebih mudah saat include
+      });
+      
     }
   }
   User.init({
@@ -27,17 +32,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     username: {
       type: DataTypes.STRING,
-      allownull: false,
+      allowNull: false, // Harus ditambahkan
+      unique: true,
       validate: {
-        notNull: {
-          msg: "Nama wajib diisi",
-        },
+        notNull: { msg: "Username tidak boleh kosong" }, // Hanya boleh jika allowNull: false
         len: {
           args: [3, 50],
-          msg: "Nama harus terdiri dari 3 hingga 50 karakter",
-        },
-      },
-    },
+          msg: "Username harus memiliki panjang 3-50 karakter"
+        }
+      }
+    }
+    ,
     email: {
       type: DataTypes.STRING,
       unique: true,
@@ -89,5 +94,8 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
+  User.prototype.CorrectPassword = async(reqPassword, userPassword) => {
+    return await bcrypt.compare(reqPassword, userPassword);
+  }
   return User;
 };

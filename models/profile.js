@@ -11,6 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Profile.belongsTo(models.User, {
+        foreignKey: "userId",
+        as: "user", // Bisa digunakan untuk include
+        onDelete: "CASCADE", // Jika user dihapus, profil ikut terhapus
+      });
     }
   }
   Profile.init({

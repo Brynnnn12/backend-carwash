@@ -1,0 +1,133 @@
+2025-03-19T12:46:52.003Z [INFO]: Server berjalan di port 3000
+2025-03-19T12:47:06.735Z [INFO]: [0mGET /api/auth/me [32m200[0m 105.839 ms - 325[0m
+2025-03-19T12:49:01.983Z [INFO]: Server berjalan di port 3000
+2025-03-19T12:49:18.151Z [INFO]: Server berjalan di port 3000
+2025-03-19T12:50:14.286Z [INFO]: Server berjalan di port 3000
+2025-03-19T12:50:54.683Z [INFO]: [0mGET /api/auth/me [32m200[0m 69.269 ms - 325[0m
+2025-03-19T12:51:36.784Z [INFO]: Server berjalan di port 3000
+2025-03-19T12:52:27.422Z [INFO]: Server berjalan di port 3000
+2025-03-19T12:52:40.932Z [INFO]: Server berjalan di port 3000
+2025-03-19T12:54:53.829Z [INFO]: Server berjalan di port 3000
+2025-03-19T12:58:57.429Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:06:21.171Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:06:40.826Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:06:48.911Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:08:50.730Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:09:43.007Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:10:43.412Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:25:55.266Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:27:11.464Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:29:41.556Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:29:46.586Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:29:49.984Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:31:49.610Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:32:46.592Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:33:15.540Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:34:33.371Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:35:05.757Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:42:12.478Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:46:06.574Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:48:55.080Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:49:35.082Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:50:11.111Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:50:20.685Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:51:20.205Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:51:25.151Z [INFO]: [0mPOST /api/profile [33m404[0m 27.459 ms - 965[0m
+2025-03-19T13:51:29.831Z [INFO]: [0mPOST /api/profiles [33m404[0m 7.587 ms - -[0m
+2025-03-19T13:52:09.647Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:52:15.786Z [INFO]: [0mPOST /api/profile [33m400[0m 131.586 ms - 54[0m
+2025-03-19T13:53:32.445Z [INFO]: [0mPOST /api/profile [33m400[0m 1.696 ms - 54[0m
+2025-03-19T13:53:46.539Z [INFO]: [0mPOST /api/profile [33m400[0m 1.840 ms - 51[0m
+2025-03-19T13:56:12.415Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:56:21.294Z [INFO]: [0mPOST /api/profile [33m400[0m 17.882 ms - 53[0m
+2025-03-19T13:56:46.985Z [INFO]: [0mPOST /api/profile [33m400[0m 2.504 ms - 57[0m
+2025-03-19T13:57:09.160Z [INFO]: [0mPOST /api/profile [33m400[0m 1.854 ms - 52[0m
+2025-03-19T13:57:35.846Z [INFO]: [0mPOST /api/profile [33m400[0m 1.634 ms - 57[0m
+2025-03-19T13:58:00.665Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:58:03.969Z [INFO]: [0mPOST /api/profile [33m400[0m 19.389 ms - 48[0m
+2025-03-19T13:58:30.051Z [INFO]: Server berjalan di port 3000
+2025-03-19T13:58:34.610Z [INFO]: [0mPOST /api/profile [33m400[0m 32.025 ms - 64[0m
+2025-03-19T14:03:29.483Z [INFO]: [0mPOST /api/profile [33m400[0m 12.173 ms - 68[0m
+2025-03-19T14:03:58.133Z [INFO]: [0mPOST /api/profile [33m400[0m 1.743 ms - 52[0m
+2025-03-19T14:05:31.154Z [INFO]: [0mPOST /api/profile [33m400[0m 2.673 ms - 46[0m
+2025-03-19T14:05:59.768Z [INFO]: Server berjalan di port 3000
+2025-03-19T14:06:07.698Z [INFO]: [0mPOST /api/profile [33m400[0m 11.581 ms - 46[0m
+2025-03-19T14:07:02.478Z [INFO]: Server berjalan di port 3000
+2025-03-19T14:10:57.964Z [INFO]: Server berjalan di port 3000
+2025-03-19T14:11:37.042Z [INFO]: Server berjalan di port 3000
+2025-03-19T14:12:15.392Z [INFO]: Server berjalan di port 3000
+2025-03-19T14:12:22.066Z [INFO]: [0mPOST /api/profile [32m200[0m 22.129 ms - -[0m
+2025-03-19T14:13:46.559Z [INFO]: Server berjalan di port 3000
+2025-03-19T14:13:49.283Z [INFO]: [0mPOST /api/profile [32m200[0m 13.842 ms - -[0m
+2025-03-19T14:17:28.591Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:15:47.147Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:15:52.300Z [INFO]: [0mPOST /api/profile [32m200[0m 35.060 ms - -[0m
+2025-03-20T01:18:03.732Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:18:10.122Z [INFO]: [0mPOST /api/profile [32m201[0m 4913.391 ms - 413[0m
+2025-03-20T01:23:29.262Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:24:01.198Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:24:53.843Z [INFO]: [0mPOST /api/profile [32m201[0m 6553.877 ms - 411[0m
+2025-03-20T01:27:04.298Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:27:16.506Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:27:29.638Z [INFO]: [0mPOST /api/profile [33m400[0m 3524.543 ms - 56[0m
+2025-03-20T01:34:33.636Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:35:43.386Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:35:55.673Z [INFO]: [0mGET /api/profile [33m404[0m 10.744 ms - 29[0m
+2025-03-20T01:37:04.297Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:37:07.103Z [INFO]: [0mGET /api/profile [33m401[0m 14.239 ms - 77[0m
+2025-03-20T01:38:55.156Z [INFO]: [0mPOST /api/login [33m404[0m 8.342 ms - -[0m
+2025-03-20T01:39:16.902Z [INFO]: [0mPOST /api/login [33m404[0m 379.903 ms - -[0m
+2025-03-20T01:39:53.315Z [INFO]: [0mPOST /api/auth/login [33m400[0m 3.004 ms - 51[0m
+2025-03-20T01:40:08.671Z [INFO]: [0mPOST /api/auth/login [33m400[0m 1.981 ms - 66[0m
+2025-03-20T01:40:30.965Z [INFO]: [0mPOST /api/auth/login [31m500[0m 112.219 ms - 66[0m
+2025-03-20T01:41:01.211Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:41:02.451Z [INFO]: [0mPOST /api/auth/login [31m500[0m 89.370 ms - 74[0m
+2025-03-20T01:41:37.401Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:41:40.326Z [INFO]: [0mPOST /api/auth/login [32m200[0m 173.461 ms - 276[0m
+2025-03-20T01:42:28.186Z [INFO]: [0mGET /api/profile [33m404[0m 18.696 ms - 29[0m
+2025-03-20T01:42:45.884Z [INFO]: [0mGET /api/profile/ [33m404[0m 16.261 ms - 29[0m
+2025-03-20T01:43:57.600Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:44:01.495Z [INFO]: [0mGET /api/profile/ [33m400[0m 53.091 ms - 52[0m
+2025-03-20T01:46:01.084Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:46:05.514Z [INFO]: [0mGET /api/profile/ [32m200[0m 73.879 ms - 674[0m
+2025-03-20T01:48:24.069Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:48:27.956Z [INFO]: [0mGET /api/profile/ [32m200[0m 75.785 ms - 30[0m
+2025-03-20T01:48:54.474Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:48:56.807Z [INFO]: [0mGET /api/profile/ [32m200[0m 73.141 ms - 460[0m
+2025-03-20T01:49:57.803Z [INFO]: [0mGET /api/profile/ [32m200[0m 22.457 ms - 460[0m
+2025-03-20T01:51:54.504Z [INFO]: Server berjalan di port 3000
+2025-03-20T01:51:57.256Z [INFO]: [0mGET /api/profile/ [32m200[0m 65.532 ms - 308[0m
+2025-03-20T02:03:49.356Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:04:34.741Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:04:40.765Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:06:54.765Z [INFO]: [0mPUT /api/profile/ [33m401[0m 4732.518 ms - 58[0m
+2025-03-20T02:07:26.208Z [INFO]: [0mPUT /api/profile/ [33m401[0m 4413.018 ms - 58[0m
+2025-03-20T02:10:26.483Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:10:35.630Z [INFO]: [0mPUT /api/profile/ [33m401[0m 4872.354 ms - 58[0m
+2025-03-20T02:10:55.976Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:11:42.308Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:11:54.659Z [INFO]: [0mGET /api/profile/ [32m200[0m 83.562 ms - 308[0m
+2025-03-20T02:12:10.252Z [INFO]: [0mPUT /api/profile/ [33m401[0m 4460.937 ms - 58[0m
+2025-03-20T02:12:26.387Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:12:32.323Z [INFO]: [0mPUT /api/profile/ [31m500[0m 4247.061 ms - 112[0m
+2025-03-20T02:13:11.962Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:13:55.835Z [INFO]: [0mPUT /api/profile/ [33m401[0m 4048.772 ms - 58[0m
+2025-03-20T02:15:47.862Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:15:56.012Z [INFO]: [0mPUT /api/profile/ [33m400[0m 4414.566 ms - 52[0m
+2025-03-20T02:16:49.912Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:16:58.221Z [INFO]: [0mPUT /api/profile/ [33m400[0m 4256.650 ms - 52[0m
+2025-03-20T02:19:06.437Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:22:54.386Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:23:34.195Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:23:42.057Z [INFO]: [0mPUT /api/profile/ [32m200[0m 5519.221 ms - 242[0m
+2025-03-20T02:25:06.055Z [INFO]: [0mPUT /api/profile/ [32m200[0m 3785.827 ms - 242[0m
+2025-03-20T02:26:22.913Z [INFO]: [0mPUT /api/profile/ [32m200[0m 5845.368 ms - 242[0m
+2025-03-20T02:26:56.840Z [INFO]: [0mPUT /api/profile/ [32m200[0m 4487.649 ms - 241[0m
+2025-03-20T02:29:19.981Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:30:19.965Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:31:06.659Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:31:57.711Z [INFO]: [0mDELETE /api/profile/ [31m500[0m 2870.126 ms - 92[0m
+2025-03-20T02:33:24.041Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:34:35.401Z [INFO]: [0mGET /api/profile/ [32m200[0m 101.506 ms - 306[0m
+2025-03-20T02:35:00.013Z [INFO]: Server berjalan di port 3000
+2025-03-20T02:35:12.751Z [INFO]: Server berjalan di port 3000

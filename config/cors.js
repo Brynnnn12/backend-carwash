@@ -1,10 +1,21 @@
 const cors = require("cors");
 
+// Konfigurasi opsi CORS (Cross-Origin Resource Sharing)
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://yourdomain.com"], // Sesuaikan dengan frontend
+  origin: function (origin, callback) {
+    // Izinkan request tanpa origin (misalnya dari backend ke backend)
+    if (!origin) return callback(null, true);
+    const allowedOrigins = ["http://localhost:3000", "http://yourdomain.com"];
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Akses tidak diizinkan oleh CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true, // Mengizinkan cookies dan header autentikasi
+  credentials: true,
 };
 
+// Mengekspor middleware CORS dengan konfigurasi yang telah dibuat
 module.exports = cors(corsOptions);
