@@ -12,7 +12,7 @@ router.use("/auth", authRoutes);
 router.use("/profile", profileRoutes);
 router.use("/service", serviceRoutes);
 router.use("/bookings", bookingRoutes);
-router.use("/serviceprice", servicePriceRoutes);
+router.use("/service-price", servicePriceRoutes);
 router.use("/transaction", transactionRoutes);
 router.use("/testimonial", testimonialRoutes);
 

@@ -4,7 +4,6 @@ const { authMiddleware } = require("../middlewares/authHandler");
 
 const {
   createProfile,
-
   getProfile,
   updateProfile,
 } = require("../controllers/profileController");

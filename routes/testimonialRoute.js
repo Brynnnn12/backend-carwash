@@ -13,7 +13,7 @@ const { authMiddleware } = require("../middlewares/authHandler");
 router.get("/", getAllTestimonials);
 router.get("/:id", authMiddleware, getTestimonialById);
 router.post("/", authMiddleware, createTestimonial);
-router.put("/:id", authMiddleware, updateTestimonial);
-router.delete("/:id", authMiddleware, deleteTestimonial);
+router.put("/", authMiddleware, updateTestimonial);
+router.delete("/", authMiddleware, deleteTestimonial);
 
 module.exports = router;

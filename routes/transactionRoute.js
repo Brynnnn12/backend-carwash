@@ -1,6 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const transactionController = require("../controllers/transactionController");
+const {
+  getTransactionById,
+  createTransaction,
+  updateTransaction,
+  updatePaymentStatus,
+  deleteTransaction,
+} = require("../controllers/transactionController");
 const upload = require("../utils/fileUpload");
 const {
   permissionMiddleware,
@@ -12,17 +18,17 @@ router.post(
   "/",
   authMiddleware,
   upload.single("paymentProof"),
-  transactionController.createTransaction
+  createTransaction
 );
 
 // router.get("/", authMiddleware, transactionController.getAllTransactions);
-router.get("/:id", authMiddleware, transactionController.getransactionById);
+router.get("/:id", authMiddleware, getTransactionById);
 
 router.put(
   "/:id",
   authMiddleware,
   upload.single("paymentProof"),
-  transactionController.updateTransaction
+  updateTransaction
 );
 
 // Route khusus untuk update status pembayaran (isPaid) - hanya admin
@@ -30,9 +36,9 @@ router.put(
   "/:id/payment-status",
   authMiddleware,
   permissionMiddleware("admin"), // Middleware untuk verifikasi admin
-  transactionController.updatePaymentStatus
+  updatePaymentStatus
 );
 
-router.delete("/:id", authMiddleware, transactionController.deleteTransaction);
+router.delete("/:id", authMiddleware, deleteTransaction);
 
 module.exports = router;

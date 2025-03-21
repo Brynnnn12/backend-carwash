@@ -5,7 +5,10 @@ const corsOptions = {
   origin: function (origin, callback) {
     // Izinkan request tanpa origin (misalnya dari backend ke backend)
     if (!origin) return callback(null, true);
-    const allowedOrigins = ["http://localhost:3000", "http://yourdomain.com"];
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "https://button-carwash.vercel.app",
+    ];
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
