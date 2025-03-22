@@ -10,10 +10,10 @@ const testimonialRoutes = require("./testimonialRoute");
 
 router.use("/auth", authRoutes);
 router.use("/profile", profileRoutes);
-router.use("/service", serviceRoutes);
+router.use("/services", serviceRoutes);
 router.use("/bookings", bookingRoutes);
 router.use("/service-price", servicePriceRoutes);
 router.use("/transaction", transactionRoutes);
-router.use("/testimonial", testimonialRoutes);
+router.use("/testimonials", testimonialRoutes);
 
 module.exports = router;

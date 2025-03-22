@@ -1,23 +1,42 @@
-const { Testimonial, User } = require("../models");
 const { testimonialSchema } = require("../validations/testimonialValidations");
 const asyncHandler = require("../middlewares/asyncHandler");
 const paginate = require("../utils/paginate");
+const { Testimonial, User, Profile } = require("../models");
 
-exports.getAllTestimonials = asyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+exports.getAllTestimonials = asyncHandler(async (req, res, next) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page) || 1); // Pastikan page minimal 1
+    const limit = Math.max(1, parseInt(req.query.limit) || 10); // Pastikan limit minimal 1
 
-  const testimonials = await paginate(Testimonial, {
-    page,
-    limit,
-    include: {
-      model: User,
-      as: "user",
-      attributes: ["id", "username", "email"],
-    },
-  });
+    const testimonials = await paginate(Testimonial, {
+      page,
+      limit,
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "username", "email"],
+          include: [
+            {
+              model: Profile,
+              as: "profile",
+              attributes: ["avatar"], // Ambil avatar dari Profile
+            },
+          ],
+        },
+      ],
+    });
 
-  res.json({ success: true, ...testimonials });
+    if (!testimonials || testimonials.data.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No testimonials found" });
+    }
+
+    res.json({ success: true, ...testimonials });
+  } catch (error) {
+    next(error); // Kirim error ke middleware error handler
+  }
 });
 
 exports.getTestimonialById = asyncHandler(async (req, res) => {
