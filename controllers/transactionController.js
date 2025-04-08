@@ -1,4 +1,4 @@
-const { Transaction } = require("../models");
+const { Transaction, Booking, ServicePrice } = require("../models");
 const transactionSchema = require("../validations/transactionValidator");
 const cloudinary = require("cloudinary").v2;
 const asyncHandler = require("../middlewares/asyncHandler");
@@ -27,6 +27,54 @@ exports.getTransactionById = asyncHandler(async (req, res) => {
   });
 });
 
+exports.getAllTransactions = asyncHandler(async (req, res) => {
+  let transactions;
+
+  if (req.user.role === "admin") {
+    // Admin bisa lihat semua transaksi
+    transactions = await Transaction.findAll({
+      include: {
+        model: Booking,
+        as: "booking",
+        include: {
+          model: ServicePrice,
+          as: "servicePrice",
+        },
+      },
+      order: [["createdAt", "DESC"]],
+    });
+  } else {
+    // User hanya lihat transaksi miliknya (melalui relasi Booking.userId)
+    transactions = await Transaction.findAll({
+      include: {
+        model: Booking,
+        as: "booking",
+        where: {
+          userId: req.user.id,
+        },
+        include: {
+          model: ServicePrice,
+          as: "servicePrice",
+        },
+      },
+      order: [["createdAt", "DESC"]],
+    });
+  }
+
+  if (!transactions || transactions.length === 0) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Transaksi tidak ditemukan",
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Transaksi berhasil ditemukan",
+    transactions,
+  });
+});
+
 // ✅ Membuat transaksi baru (hanya user yang login)
 exports.createTransaction = asyncHandler(async (req, res) => {
   // Validasi input
@@ -45,17 +93,49 @@ exports.createTransaction = asyncHandler(async (req, res) => {
     });
   }
 
-  // ✅ Upload bukti pembayaran ke Cloudinary
-  const imageResult = await cloudinary.uploader.upload(req.file.path, {
-    folder: "carwash/payment_proofs",
+  // ✅ Ambil harga dari service yang dipilih di Booking
+  const booking = await Booking.findByPk(value.bookingId, {
+    include: {
+      model: ServicePrice,
+      as: "servicePrice",
+    },
   });
+
+  if (!booking) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Booking tidak ditemukan",
+    });
+  }
+
+  if (booking.userId !== req.user.id) {
+    return res.status(403).json({
+      status: "fail",
+      message: "Kamu tidak berhak mengakses booking ini",
+    });
+  }
+
+  // ✅ Cek apakah transaksi sudah ada untuk booking ini
+  const existingTransaction = await Transaction.findOne({
+    where: { bookingId: value.bookingId },
+  });
+
+  if (existingTransaction) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Transaksi untuk booking ini sudah dibuat",
+    });
+  }
+
+  const totalAmount = booking.servicePrice.price;
 
   // ✅ Simpan transaksi ke database
   const transaction = await Transaction.create({
-    ...value,
-    userId: req.user.id, // Pastikan userId berasal dari user yang login
-    paymentProof: imageResult.secure_url,
-    isPaid: false, // Default saat pertama kali dibuat
+    bookingId: value.bookingId,
+    userId: req.user.id,
+    totalAmount, // Ambil dari harga service
+    paymentProof: req.file.path,
+    isPaid: false,
   });
 
   res.status(201).json({

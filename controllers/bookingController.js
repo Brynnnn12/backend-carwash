@@ -1,4 +1,4 @@
-const { Booking, ServicePrice, User } = require("../models");
+const { Booking, ServicePrice, User, Service } = require("../models");
 const bookingSchema = require("../validations/bookingValidator");
 const { Op } = require("sequelize");
 const asyncHandler = require("../middlewares/asyncHandler");
@@ -12,7 +12,7 @@ const getTodayRange = () => {
 };
 
 exports.createBooking = asyncHandler(async (req, res) => {
-  const userId = req.user.id; // ✅ User ID dari user yang sedang login
+  const userId = req.user.id;
   const { error, value } = bookingSchema.validate(req.body);
   if (error)
     return res
@@ -20,7 +20,7 @@ exports.createBooking = asyncHandler(async (req, res) => {
       .json({ success: false, message: error.details[0].message });
 
   const bookingCount = await Booking.count({
-    where: { userId, createdAt: { [Op.between]: getTodayRange() } }, // ✅ Filter berdasarkan user yang login
+    where: { userId, createdAt: { [Op.between]: getTodayRange() } },
   });
 
   if (bookingCount >= 2)
@@ -32,13 +32,35 @@ exports.createBooking = asyncHandler(async (req, res) => {
   if (!servicePrice)
     return res
       .status(404)
-      .json({ success: false, message: "Service price not found" });
+      .json({ success: false, message: "Service price tidak ditemukan" });
 
-  const newBooking = await Booking.create({ ...value, userId }); // ✅ Booking dibuat atas nama user yang login
+  if (value.licensePlate) {
+    const existingBooking = await Booking.findOne({
+      where: {
+        licensePlate: value.licensePlate,
+        createdAt: { [Op.between]: getTodayRange() },
+      },
+    });
+
+    if (existingBooking)
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Plat nomor sudah digunakan hari ini",
+        });
+  }
+
+  const newBooking = await Booking.create({
+    ...value,
+    userId,
+    servicePriceId: value.servicePriceId,
+    status: "pending",
+  });
 
   return res.status(201).json({
     success: true,
-    message: "Booking created successfully",
+    message: "Booking berhasil dibuat",
     data: newBooking,
   });
 });
@@ -47,13 +69,20 @@ exports.getAllBookings = asyncHandler(async (req, res) => {
   const userId = req.user.id; // ✅ Ambil userId dari user yang sedang login
 
   const bookings = await Booking.findAll({
-    where: { userId }, // ✅ Filter hanya booking milik user yang login
+    where: { userId },
     include: [
       { model: User, as: "user", attributes: ["id", "username", "email"] },
       {
         model: ServicePrice,
         as: "servicePrice",
         attributes: ["id", "car_type", "price"],
+        include: [
+          {
+            model: Service,
+            as: "service",
+            attributes: ["id", "name"],
+          },
+        ],
       },
     ],
   });

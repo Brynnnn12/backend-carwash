@@ -67,22 +67,12 @@ exports.createProfile = asyncHandler(async (req, res) => {
   }
 
   // Upload avatar jika ada file
-  const avatarUrl = req.file
-    ? (
-        await cloudinary.uploader.upload(req.file.path, {
-          folder: "carwash/avatar",
-          public_id: `avatar_${
-            name?.replace(/\s+/g, "_").toLowerCase() || "unknown"
-          }_${Date.now()}`,
-        })
-      ).secure_url
-    : null;
 
   // Buat profil
   const newProfile = await Profile.create({
     name,
     address,
-    avatar: avatarUrl,
+    avatar: req.file ? req.file.path : null,
     phoneNumber,
     userId,
   });

@@ -8,6 +8,7 @@ const corsOptions = {
     const allowedOrigins = [
       "http://localhost:3000",
       "https://button-carwash.vercel.app",
+      "http://localhost:5000",
     ];
     if (allowedOrigins.includes(origin)) {
       callback(null, true);

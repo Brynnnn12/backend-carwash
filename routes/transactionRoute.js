@@ -6,8 +6,9 @@ const {
   updateTransaction,
   updatePaymentStatus,
   deleteTransaction,
+  getAllTransactions,
 } = require("../controllers/transactionController");
-const upload = require("../utils/fileUpload");
+const { uploadPaymentProof } = require("../utils/fileUpload");
 const {
   permissionMiddleware,
   authMiddleware,
@@ -17,17 +18,17 @@ const {
 router.post(
   "/",
   authMiddleware,
-  upload.single("paymentProof"),
+  uploadPaymentProof.single("paymentProof"),
   createTransaction
 );
 
-// router.get("/", authMiddleware, transactionController.getAllTransactions);
+router.get("/", authMiddleware, getAllTransactions);
 router.get("/:id", authMiddleware, getTransactionById);
 
 router.put(
   "/:id",
   authMiddleware,
-  upload.single("paymentProof"),
+  uploadPaymentProof.single("paymentProof"),
   updateTransaction
 );
 

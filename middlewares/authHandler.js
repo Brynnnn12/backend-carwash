@@ -32,7 +32,7 @@ exports.authMiddleware = async (req, res, next) => {
       include: [{ model: Role, as: "role", attributes: ["name"] }], // Ambil nama role dari relasi
     });
 
-    console.log("User Data:", currentUser.toJSON()); // Tambahkan log ini untuk debugging
+    // console.log("User Data:", currentUser.toJSON()); // Tambahkan log ini untuk debugging
     if (!currentUser) {
       return res.status(401).json({
         status: "401",

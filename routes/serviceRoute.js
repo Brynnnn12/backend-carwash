@@ -13,7 +13,7 @@ const {
 } = require("../middlewares/authHandler");
 
 router.post("/", authMiddleware, permissionMiddleware("admin"), create);
-router.get("/", authMiddleware, permissionMiddleware("admin"), getAll);
+router.get("/", getAll);
 router.put("/:id", authMiddleware, permissionMiddleware("admin"), update);
 router.delete(
   "/:id",

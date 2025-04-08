@@ -10,7 +10,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Filter format file yang diperbolehkan
+// File filter
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/gif"];
   if (allowedTypes.includes(file.mimetype)) {
@@ -23,25 +23,60 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Konfigurasi penyimpanan di Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "carwash", // Folder di Cloudinary
-    allowed_formats: ["jpg", "png", "jpeg", "gif"],
-    transformation: [
-      { width: 800, height: 600, crop: "limit", quality: "auto" },
-    ], // Optimasi gambar
-    public_id: (req, file) =>
-      `${Date.now()}-${Math.round(Math.random() * 1e9)}`,
+// Storage untuk avatar
+const avatarStorage = new CloudinaryStorage({
+  cloudinary,
+  params: (req, file) => {
+    const userId = req.user?.username || "user";
+    return {
+      folder: "carwash/avatar",
+      allowed_formats: ["jpg", "jpeg", "png", "gif"],
+      transformation: [
+        {
+          width: 400,
+          height: 400,
+          crop: "thumb",
+          gravity: "face",
+          quality: "auto",
+        },
+      ],
+      public_id: `avatar_${userId}_${Date.now()}`,
+    };
   },
 });
 
-// Middleware upload dengan batas ukuran 2MB
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
-  fileFilter: fileFilter,
+// Storage untuk payment proof
+const paymentProofStorage = new CloudinaryStorage({
+  cloudinary,
+  params: (req, file) => {
+    // console.log("🧾 DEBUG req.user di upload Cloudinary:", req.user.username);
+
+    const userId = req.user?.username || "user";
+    return {
+      folder: "carwash/payment_proofs",
+      allowed_formats: ["jpg", "jpeg", "png", "gif"],
+      transformation: [
+        { width: 800, height: 600, crop: "limit", quality: "auto" },
+      ],
+      public_id: `paymentproof_${userId}_${Date.now()}`,
+    };
+  },
 });
 
-module.exports = upload;
+// Multer instance
+const uploadAvatar = multer({
+  storage: avatarStorage,
+  limits: { fileSize: 2 * 1024 * 1024 },
+  fileFilter,
+});
+
+const uploadPaymentProof = multer({
+  storage: paymentProofStorage,
+  limits: { fileSize: 2 * 1024 * 1024 },
+  fileFilter,
+});
+
+module.exports = {
+  uploadAvatar,
+  uploadPaymentProof,
+};

@@ -49,7 +49,7 @@ generateSwagger().then(() => {
   // Middleware Swagger UI
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-  // Routes
+  // Routess
   app.use("/api", routes);
 
   // Middleware untuk menangani error dan not found
