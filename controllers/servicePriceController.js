@@ -1,8 +1,9 @@
 const { ServicePrice, Service } = require("../models");
 const { servicePriceSchema } = require("../validations/servicePriceValidator");
 const asyncHandler = require("../middlewares/asyncHandler");
+const { paginate } = require("../utils/paginate");
 
-const createServicePrice = asyncHandler(async (req, res) => {
+exports.createServicePrice = asyncHandler(async (req, res) => {
   // Destrukturisasi req.body
   const { serviceId, car_type, price } = req.body;
 
@@ -35,16 +36,40 @@ const createServicePrice = asyncHandler(async (req, res) => {
   });
 });
 
-const getAllServicePrices = asyncHandler(async (req, res) => {
-  const servicePrices = await ServicePrice.findAll({ include: "service" });
+exports.getAllServicePrices = asyncHandler(async (req, res) => {
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit) || 10);
+
+  const servicePrices = await paginate(ServicePrice, {
+    page,
+    limit,
+    include: [
+      {
+        model: Service,
+        as: "service",
+        attributes: ["name"],
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+    attributes: {
+      exclude: ["createdAt", "updatedAt", "serviceId"],
+    },
+  });
+  if (!servicePrices || servicePrices.data.length === 0) {
+    return res.status(404).json({
+      success: false,
+      message: "Tidak ada harga layanan yang ditemukan",
+    });
+  }
   return res.status(200).json({
     success: true,
     message: "List harga layanan",
-    data: servicePrices,
+    data: servicePrices.data,
+    pagination: servicePrices.pagination,
   });
 });
 
-const getServicePriceById = asyncHandler(async (req, res) => {
+exports.getServicePriceById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const servicePrice = await ServicePrice.findByPk(id, {
     include: "service",
@@ -61,7 +86,7 @@ const getServicePriceById = asyncHandler(async (req, res) => {
   });
 });
 
-const updateServicePrice = asyncHandler(async (req, res) => {
+exports.updateServicePrice = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { serviceId, car_type, price } = req.body;
 
@@ -86,7 +111,7 @@ const updateServicePrice = asyncHandler(async (req, res) => {
   });
 });
 
-const deleteServicePrice = asyncHandler(async (req, res) => {
+exports.deleteServicePrice = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const servicePrice = await ServicePrice.findByPk(id);
 
@@ -95,13 +120,8 @@ const deleteServicePrice = asyncHandler(async (req, res) => {
   }
 
   await servicePrice.destroy();
-  return res.status(200).json({ message: "Harga layanan berhasil dihapus" });
+  return res.status(204).json({
+    success: true,
+    message: "Harga layanan berhasil dihapus",
+  });
 });
-
-module.exports = {
-  createServicePrice,
-  getAllServicePrices,
-  getServicePriceById,
-  updateServicePrice,
-  deleteServicePrice,
-};

@@ -13,7 +13,7 @@ router.use("/profile", profileRoutes);
 router.use("/services", serviceRoutes);
 router.use("/bookings", bookingRoutes);
 router.use("/service-price", servicePriceRoutes);
-router.use("/transaction", transactionRoutes);
+router.use("/transactions", transactionRoutes);
 router.use("/testimonials", testimonialRoutes);
 
 module.exports = router;

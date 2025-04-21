@@ -1,11 +1,41 @@
-const { Transaction, Booking, ServicePrice } = require("../models");
+const { Transaction, Booking, ServicePrice, Service } = require("../models");
 const transactionSchema = require("../validations/transactionValidator");
 const cloudinary = require("cloudinary").v2;
 const asyncHandler = require("../middlewares/asyncHandler");
+const { paginate } = require("../utils/paginate");
 
 exports.getTransactionById = asyncHandler(async (req, res) => {
-  const transaction = await Transaction.findByPk(req.params.id);
+  // Validasi user
+  if (!req.user || !req.user.id || !req.user.role) {
+    return res.status(401).json({
+      status: "fail",
+      message: "User tidak terautentikasi",
+    });
+  }
 
+  // Ambil transaksi berdasarkan ID
+  const transaction = await Transaction.findByPk(req.params.id, {
+    include: {
+      model: Booking,
+      as: "booking",
+      attributes: ["userId", "bookingDate", "licensePlate", "bookingTime"],
+      include: {
+        model: ServicePrice,
+        as: "servicePrice",
+        attributes: ["car_type", "price"],
+        include: {
+          model: Service,
+          as: "service",
+          attributes: ["name"],
+        },
+      },
+    },
+    attributes: {
+      exclude: ["createdAt", "updatedAt"],
+    },
+  });
+
+  // Jika transaksi tidak ditemukan
   if (!transaction) {
     return res.status(404).json({
       status: "fail",
@@ -13,65 +43,68 @@ exports.getTransactionById = asyncHandler(async (req, res) => {
     });
   }
 
-  // Pastikan hanya pemilik transaksi atau admin yang bisa mengakses
-  if (transaction.userId !== req.user.id && req.user.role !== "admin") {
+  // Hanya admin atau pemilik transaksi yang bisa mengakses
+  if (transaction.booking.userId !== req.user.id && req.user.role !== "admin") {
     return res.status(403).json({
       status: "fail",
       message: "Anda tidak memiliki izin untuk melihat transaksi ini",
     });
   }
 
-  res.status(200).json({
+  // Response berhasil
+  return res.status(200).json({
     status: "success",
-    transaction,
+    message: "Transaksi berhasil ditemukan",
+    data: transaction,
   });
 });
 
 exports.getAllTransactions = asyncHandler(async (req, res) => {
-  let transactions;
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit) || 10);
 
-  if (req.user.role === "admin") {
-    // Admin bisa lihat semua transaksi
-    transactions = await Transaction.findAll({
+  const isAdmin = req.user.role === "admin";
+
+  const whereBooking = isAdmin ? {} : { userId: req.user.id };
+
+  const transactions = await paginate(Transaction, {
+    page,
+    limit,
+
+    include: {
+      model: Booking,
+      as: "booking",
+      attributes: ["userId", "bookingDate", "licensePlate", "bookingTime"],
+      where: whereBooking,
       include: {
-        model: Booking,
-        as: "booking",
+        model: ServicePrice,
+        as: "servicePrice",
+        attributes: ["car_type", "price"],
         include: {
-          model: ServicePrice,
-          as: "servicePrice",
+          model: Service,
+          as: "service",
+          attributes: ["name"],
         },
       },
-      order: [["createdAt", "DESC"]],
-    });
-  } else {
-    // User hanya lihat transaksi miliknya (melalui relasi Booking.userId)
-    transactions = await Transaction.findAll({
-      include: {
-        model: Booking,
-        as: "booking",
-        where: {
-          userId: req.user.id,
-        },
-        include: {
-          model: ServicePrice,
-          as: "servicePrice",
-        },
-      },
-      order: [["createdAt", "DESC"]],
-    });
-  }
+    },
+    order: [["createdAt", "DESC"]],
+    attributes: {
+      exclude: ["createdAt", "updatedAt"],
+    },
+  });
 
-  if (!transactions || transactions.length === 0) {
+  if (!transactions || transactions.data.length === 0) {
     return res.status(404).json({
       status: "fail",
       message: "Transaksi tidak ditemukan",
     });
   }
 
-  res.status(200).json({
+  return res.status(200).json({
     status: "success",
     message: "Transaksi berhasil ditemukan",
-    transactions,
+    data: transactions.data,
+    pagination: transactions.pagination,
   });
 });
 
@@ -138,10 +171,10 @@ exports.createTransaction = asyncHandler(async (req, res) => {
     isPaid: false,
   });
 
-  res.status(201).json({
+  return res.status(201).json({
     status: "success",
     message: "Transaksi berhasil dibuat",
-    transaction,
+    data: transaction,
   });
 });
 
@@ -149,7 +182,7 @@ exports.createTransaction = asyncHandler(async (req, res) => {
 exports.updateTransaction = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  // Validasi input
+  // Validasi input (pastikan schema juga nggak ada isPaid ya)
   const { error, value } = transactionSchema.validate(req.body);
   if (error) {
     return res.status(400).json({
@@ -158,7 +191,6 @@ exports.updateTransaction = asyncHandler(async (req, res) => {
     });
   }
 
-  // Cek transaksi
   const existingTransaction = await Transaction.findByPk(id);
   if (!existingTransaction) {
     return res.status(404).json({
@@ -167,7 +199,7 @@ exports.updateTransaction = asyncHandler(async (req, res) => {
     });
   }
 
-  // Pastikan hanya pemilik atau admin yang bisa update transaksi
+  // Cek hak akses
   if (existingTransaction.userId !== req.user.id && req.user.role !== "admin") {
     return res.status(403).json({
       status: "fail",
@@ -179,30 +211,22 @@ exports.updateTransaction = asyncHandler(async (req, res) => {
 
   // Jika ada file bukti pembayaran baru
   if (req.file) {
-    // Upload ke Cloudinary
-    const imageResult = await cloudinary.uploader.upload(req.file.path, {
-      folder: "carwash/payment_proofs",
-    });
-    updateData.paymentProof = imageResult.secure_url;
+    updateData.paymentProof = req.file.path;
 
-    // Hapus gambar lama jika ada
+    // Hapus bukti lama dari Cloudinary
     if (existingTransaction.paymentProof) {
-      const publicId = existingTransaction.paymentProof
-        .split("/")
-        .pop()
-        .split(".")[0];
-      await cloudinary.uploader.destroy(`carwash/payment_proofs/${publicId}`);
+      const oldUrl = existingTransaction.paymentProof;
+      const filename = oldUrl.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(`carwash/payment_proofs/${filename}`);
     }
   }
 
-  // Hapus `isPaid` agar tidak bisa diubah langsung
-  delete updateData.isPaid;
-
-  // Update transaksi
+  // Langsung update tanpa perlu hapus isPaid lagi
   await existingTransaction.update(updateData);
+
   const updatedTransaction = await Transaction.findByPk(id);
 
-  res.status(200).json({
+  return res.status(200).json({
     status: "success",
     message: "Transaksi berhasil diperbarui",
     transaction: updatedTransaction,
@@ -215,7 +239,7 @@ exports.updatePaymentStatus = asyncHandler(async (req, res) => {
   const { isPaid } = req.body;
 
   // Pastikan user adalah admin
-  if (req.user.role !== "admin") {
+  if (req.user.role.name !== "admin") {
     return res.status(403).json({
       success: false,
       message: "Unauthorized! Hanya admin yang bisa mengubah status pembayaran",
@@ -237,10 +261,10 @@ exports.updatePaymentStatus = asyncHandler(async (req, res) => {
   // Update status pembayaran
   await transaction.update({ isPaid: newIsPaidStatus });
 
-  res.status(200).json({
+  return res.status(200).json({
     status: "success",
     message: "Status pembayaran berhasil diperbarui",
-    transaction,
+    data: transaction,
   });
 });
 
@@ -274,7 +298,7 @@ exports.deleteTransaction = asyncHandler(async (req, res) => {
   // Hapus transaksi dari database
   await transaction.destroy();
 
-  res.status(200).json({
+  return res.status(204).json({
     status: "success",
     message: "Transaksi berhasil dihapus",
   });

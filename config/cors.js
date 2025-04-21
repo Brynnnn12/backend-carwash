@@ -7,6 +7,7 @@ const corsOptions = {
     if (!origin) return callback(null, true);
     const allowedOrigins = [
       "http://localhost:3000",
+      "http://localhost:5173",
       "https://button-carwash.vercel.app",
       "http://localhost:5000",
     ];
@@ -16,7 +17,7 @@ const corsOptions = {
       callback(new Error("Akses tidak diizinkan oleh CORS"));
     }
   },
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };

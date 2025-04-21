@@ -1,5 +1,4 @@
-"use strict";
-const { Profile, User } = require("../models");
+const { Profile, User, Role } = require("../models");
 const cloudinary = require("cloudinary").v2;
 const asyncHandler = require("../middlewares/asyncHandler");
 
@@ -19,12 +18,17 @@ exports.getProfile = asyncHandler(async (req, res) => {
       {
         model: User,
         as: "user",
-        attributes: {
-          exclude: ["password", "roleId", "createdAt", "updatedAt"],
-        },
+        attributes: ["username"], // kosongin, supaya semua atribut user disembunyikan
+        include: [
+          {
+            model: Role,
+            as: "role",
+            attributes: ["name"], // ambil nama role atau yang kamu butuhkan
+          },
+        ],
       },
     ],
-    attributes: { exclude: ["id", "createdAt", "updatedAt"] },
+    attributes: { exclude: ["id", "userId", "createdAt", "updatedAt"] },
   });
 
   if (!profile) {
@@ -34,8 +38,9 @@ exports.getProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  res.status(200).json({
+  return res.status(200).json({
     status: "success",
+    message: "Profile berhasil ditemukan",
     data: profile,
   });
 });
@@ -77,9 +82,9 @@ exports.createProfile = asyncHandler(async (req, res) => {
     userId,
   });
 
-  res.status(201).json({
+  return res.status(201).json({
     status: "success",
-    message: "Profile created successfully",
+    message: "Profile berhasil dibuat",
     data: newProfile,
   });
 });
@@ -140,9 +145,9 @@ exports.updateProfile = asyncHandler(async (req, res) => {
   // Update profil
   await profile.update(updateData);
 
-  res.status(200).json({
+  return res.status(200).json({
     status: "success",
-    message: "Profile updated successfully",
+    message: "Profile berhasil diperbarui",
     data: updateData,
   });
 });

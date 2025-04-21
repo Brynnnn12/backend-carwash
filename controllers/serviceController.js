@@ -1,14 +1,34 @@
 const asyncHandler = require("../middlewares/asyncHandler");
 const { Service } = require("../models");
+const { paginate } = require("../utils/paginate");
 const { serviceSchema } = require("../validations/serviceValidator");
 
 // Get all services
 exports.getAll = asyncHandler(async (req, res) => {
-  const services = await Service.findAll();
-  res.status(200).json({
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit) || 10);
+
+  const result = await paginate(Service, {
+    page,
+    limit,
+    order: [["createdAt", "DESC"]],
+    attributes: {
+      exclude: ["createdAt", "updatedAt"],
+    },
+  });
+
+  if (!result || result.data.length === 0) {
+    return res.status(404).json({
+      success: false,
+      message: "Tidak ada layanan yang ditemukan",
+    });
+  }
+
+  return res.status(200).json({
     success: true,
-    message: "List of all services",
-    data: services,
+    message: "Semua layanan berhasil ditemukan",
+    data: result.data,
+    pagination: result.pagination,
   });
 });
 
@@ -19,9 +39,13 @@ exports.getById = asyncHandler(async (req, res) => {
   if (!service) {
     return res
       .status(404)
-      .json({ success: false, message: "Service not found" });
+      .json({ success: false, message: "Service tidak ditemukan" });
   }
-  res.status(200).json({ success: true, data: service });
+  return res.status(200).json({
+    success: true,
+    message: "Detail layanan berhasil ditemukan",
+    data: service,
+  });
 });
 
 // Create new service
@@ -36,9 +60,9 @@ exports.create = asyncHandler(async (req, res) => {
   const { name, description, price } = req.body;
   const newService = await Service.create({ name, description, price });
 
-  res.status(201).json({
+  return res.status(201).json({
     success: true,
-    message: "Service created successfully",
+    message: "Service berhasil dibuat",
     data: newService,
   });
 });
@@ -57,13 +81,13 @@ exports.update = asyncHandler(async (req, res) => {
   if (!service) {
     return res
       .status(404)
-      .json({ success: false, message: "Service not found" });
+      .json({ success: false, message: "Service tidak ditemukan" });
   }
 
   await service.update(req.body);
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
-    message: "Service updated successfully",
+    message: "Service berhasil diperbarui",
     data: service,
   });
 });
@@ -75,11 +99,11 @@ exports.deleteService = asyncHandler(async (req, res) => {
   if (!service) {
     return res
       .status(404)
-      .json({ success: false, message: "Service not found" });
+      .json({ success: false, message: "Service tidak ditemukan" });
   }
 
   await service.destroy();
-  res
-    .status(200)
-    .json({ success: true, message: "Service deleted successfully" });
+  return res
+    .status(204)
+    .json({ success: true, message: "Service berhasil dihapus" });
 });

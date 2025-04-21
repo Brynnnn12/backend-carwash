@@ -21,7 +21,7 @@ router.post(
 router.get(
   "/",
   authMiddleware,
-  permissionMiddleware("admin"),
+
   getAllServicePrices
 );
 router.get(

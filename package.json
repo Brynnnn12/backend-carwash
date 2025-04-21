@@ -7,16 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js"
   },
-  "nodemonConfig": {
-    "watch": [
-      "routes",
-      "controllers"
-    ],
-    "ignore": [
-      "swagger-output.json"
-    ],
-    "ext": "js,json"
-  },
+
   "keywords": [],
   "author": "",
   "license": "ISC",

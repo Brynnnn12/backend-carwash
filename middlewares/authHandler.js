@@ -53,9 +53,10 @@ exports.authMiddleware = async (req, res, next) => {
 
 exports.permissionMiddleware = (...roles) => {
   return async (req, res, next) => {
-    const rolesData = await Role.findByPk(req.user.roleId);
-    console.log(rolesData);
-    const rolesName = rolesData.name;
+    // const rolesData = await Role.findByPk(req.user.roleId);
+    // console.log(rolesData);
+    // const rolesName = rolesData.name;
+    const rolesName = req.user.role?.name;
     if (!roles.includes(rolesName)) {
       return next(
         res.status(403).json({
