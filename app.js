@@ -9,9 +9,7 @@ const swaggerUi = require("swagger-ui-express");
 const logger = require("./config/logging");
 const morganMiddleware = require("./config/morgan");
 const routes = require("./routes");
-const limiter = require("./config/rateLimit");
 const cors = require("./config/cors");
-const generateSwagger = require("./config/swagger");
 const { errorHandler, notFound } = require("./middlewares/errorHandler");
 
 const app = express();

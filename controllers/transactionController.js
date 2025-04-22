@@ -63,7 +63,7 @@ exports.getAllTransactions = asyncHandler(async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.max(1, parseInt(req.query.limit) || 10);
 
-  const isAdmin = req.user.role === "admin";
+  const isAdmin = req.user.role.name === "admin";
 
   const whereBooking = isAdmin ? {} : { userId: req.user.id };
 
@@ -109,78 +109,80 @@ exports.getAllTransactions = asyncHandler(async (req, res) => {
 });
 
 // ✅ Membuat transaksi baru (hanya user yang login)
-exports.createTransaction = asyncHandler(async (req, res) => {
-  // Validasi input
-  const { error, value } = transactionSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({
-      status: "fail",
-      message: error.details[0].message,
-    });
-  }
+// exports.createTransaction = asyncHandler(async (req, res) => {
+//   // Validasi input
+//   const { error, value } = transactionSchema.validate(req.body);
+//   if (error) {
+//     return res.status(400).json({
+//       status: "fail",
+//       message: error.details[0].message,
+//     });
+//   }
 
-  if (!req.file) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Bukti pembayaran wajib diunggah",
-    });
-  }
+//   if (!req.file) {
+//     return res.status(400).json({
+//       status: "fail",
+//       message: "Bukti pembayaran wajib diunggah",
+//     });
+//   }
 
-  // ✅ Ambil harga dari service yang dipilih di Booking
-  const booking = await Booking.findByPk(value.bookingId, {
-    include: {
-      model: ServicePrice,
-      as: "servicePrice",
-    },
-  });
+//   // ✅ Ambil harga dari service yang dipilih di Booking
+//   const booking = await Booking.findByPk(value.bookingId, {
+//     include: {
+//       model: ServicePrice,
+//       as: "servicePrice",
+//     },
+//   });
 
-  if (!booking) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Booking tidak ditemukan",
-    });
-  }
+//   if (!booking) {
+//     return res.status(404).json({
+//       status: "fail",
+//       message: "Booking tidak ditemukan",
+//     });
+//   }
 
-  if (booking.userId !== req.user.id) {
-    return res.status(403).json({
-      status: "fail",
-      message: "Kamu tidak berhak mengakses booking ini",
-    });
-  }
+//   if (booking.userId !== req.user.id) {
+//     return res.status(403).json({
+//       status: "fail",
+//       message: "Kamu tidak berhak mengakses booking ini",
+//     });
+//   }
 
-  // ✅ Cek apakah transaksi sudah ada untuk booking ini
-  const existingTransaction = await Transaction.findOne({
-    where: { bookingId: value.bookingId },
-  });
+//   // ✅ Cek apakah transaksi sudah ada untuk booking ini
+//   const existingTransaction = await Transaction.findOne({
+//     where: { bookingId: value.bookingId },
+//   });
 
-  if (existingTransaction) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Transaksi untuk booking ini sudah dibuat",
-    });
-  }
+//   if (existingTransaction) {
+//     return res.status(400).json({
+//       status: "fail",
+//       message: "Transaksi untuk booking ini sudah dibuat",
+//     });
+//   }
 
-  const totalAmount = booking.servicePrice.price;
+//   const totalAmount = booking.servicePrice.price;
 
-  // ✅ Simpan transaksi ke database
-  const transaction = await Transaction.create({
-    bookingId: value.bookingId,
-    userId: req.user.id,
-    totalAmount, // Ambil dari harga service
-    paymentProof: req.file.path,
-    isPaid: false,
-  });
+//   // ✅ Simpan transaksi ke database
+//   const transaction = await Transaction.create({
+//     bookingId: value.bookingId,
+//     userId: req.user.id,
+//     totalAmount, // Ambil dari harga service
+//     paymentProof: req.file.path,
+//     isPaid: false,
+//   });
 
-  return res.status(201).json({
-    status: "success",
-    message: "Transaksi berhasil dibuat",
-    data: transaction,
-  });
-});
+//   return res.status(201).json({
+//     status: "success",
+//     message: "Transaksi berhasil dibuat",
+//     data: transaction,
+//   });
+// });
 
 // ✅ Update transaksi (hanya pemilik atau admin)
 exports.updateTransaction = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id; // ✅ Ambil user yang login
+  console.log(userId);
 
   // Validasi input (pastikan schema juga nggak ada isPaid ya)
   const { error, value } = transactionSchema.validate(req.body);
@@ -191,7 +193,14 @@ exports.updateTransaction = asyncHandler(async (req, res) => {
     });
   }
 
-  const existingTransaction = await Transaction.findByPk(id);
+  const existingTransaction = await Transaction.findByPk(id, {
+    include: {
+      model: Booking,
+      as: "booking",
+      attributes: ["userId"],
+    },
+  });
+
   if (!existingTransaction) {
     return res.status(404).json({
       status: "fail",
@@ -199,14 +208,21 @@ exports.updateTransaction = asyncHandler(async (req, res) => {
     });
   }
 
-  // Cek hak akses
-  if (existingTransaction.userId !== req.user.id && req.user.role !== "admin") {
+  // 🔒 Hanya user pemilik atau admin yang boleh update
+  if (
+    existingTransaction.booking.userId !== userId &&
+    req.user.role?.name !== "admin"
+  ) {
     return res.status(403).json({
       status: "fail",
       message: "Anda tidak memiliki izin untuk mengubah transaksi ini",
     });
   }
 
+  console.log("Transaksi userId:", existingTransaction.userId);
+  console.log("User login id:", userId);
+
+  // Update transaksi
   const updateData = { ...value };
 
   // Jika ada file bukti pembayaran baru
@@ -282,7 +298,7 @@ exports.deleteTransaction = asyncHandler(async (req, res) => {
   }
 
   // Pastikan hanya pemilik atau admin yang bisa menghapus transaksi
-  if (transaction.userId !== req.user.id && req.user.role !== "admin") {
+  if (transaction.userId !== req.user.id && req.user.role.name !== "admin") {
     return res.status(403).json({
       status: "fail",
       message: "Anda tidak memiliki izin untuk menghapus transaksi ini",

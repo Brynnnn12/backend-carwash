@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     /**
@@ -15,37 +13,41 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "bookingId",
         as: "booking",
         onDelete: "CASCADE",
-        onUpdate: "CASCADE"
-      })
+        onUpdate: "CASCADE",
+      });
     }
   }
-  Transaction.init({
-    id: {
-      allowNull: false,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
+  Transaction.init(
+    {
+      id: {
+        allowNull: false,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
+      bookingId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      totalAmount: {
+        type: DataTypes.DECIMAL(15, 2), // Menyimpan nominal transaksi
+        allowNull: false,
+      },
+      paymentProof: {
+        type: DataTypes.STRING, // Menyimpan URL atau path bukti pembayaran
+        allowNull: true,
+        defaultValue: null,
+      },
+      isPaid: {
+        type: DataTypes.BOOLEAN, // Menandai apakah transaksi sudah dibayar
+        allowNull: false,
+        defaultValue: false,
+      },
     },
-    bookingId: {
-      type: DataTypes.UUID,
-      allowNull: false
-    },
-    totalAmount: {
-      type: DataTypes.DECIMAL(15, 2), // Menyimpan nominal transaksi
-      allowNull: false
-    },
-    paymentProof: {
-      type: DataTypes.STRING, // Menyimpan URL atau path bukti pembayaran
-      allowNull: false
-    },
-    isPaid: {
-      type: DataTypes.BOOLEAN, // Menandai apakah transaksi sudah dibayar
-      allowNull: false,
-      defaultValue: false
+    {
+      sequelize,
+      modelName: "Transaction",
     }
-  }, {
-    sequelize,
-    modelName: 'Transaction',
-  });
+  );
   return Transaction;
 };

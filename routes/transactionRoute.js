@@ -15,12 +15,12 @@ const {
 } = require("../middlewares/authHandler"); // Asumsikan ada middleware untuk cek admin
 
 // CRUD Routes
-router.post(
-  "/",
-  authMiddleware,
-  uploadPaymentProof.single("paymentProof"),
-  createTransaction
-);
+// router.post(
+//   "/",
+//   authMiddleware,
+//   uploadPaymentProof.single("paymentProof"),
+//   createTransaction
+// );
 
 router.get("/", authMiddleware, getAllTransactions);
 router.get("/:id", authMiddleware, getTransactionById);
