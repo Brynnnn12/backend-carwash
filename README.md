@@ -13,7 +13,3 @@ Backend RESTful API untuk aplikasi layanan cuci mobil (Carwash) menggunakan **Ex
 
 ---
 
-# Cara Instal
-git clone https://github.com/username/carwash-backend.git
-cd carwash-backend
-npm install
