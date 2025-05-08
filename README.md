@@ -15,12 +15,12 @@ Backend RESTful API untuk aplikasi layanan cuci mobil (Carwash) menggunakan **Ex
 
 ## Teknologi
 
--Node.js
--Express.js
--MySQL / Sequelize
+- Node.js
+- Express.js
+- MySQL / Sequelize
 
 ## 📌 Catatan
 
--Pastikan database sudah dibuat sebelum menjalankan server.
--Gunakan Postman atau Insomnia untuk menguji endpoint API.
--Autentikasi dan role dapat ditambahkan sesuai kebutuhan (admin, user, staff).
+- Pastikan database sudah dibuat sebelum menjalankan server.
+- Gunakan Postman atau Insomnia untuk menguji endpoint API.
+- Autentikasi dan role dapat ditambahkan sesuai kebutuhan (admin, user, staff).
