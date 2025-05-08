@@ -74,7 +74,7 @@ exports.getAllTransactions = asyncHandler(async (req, res) => {
     include: {
       model: Booking,
       as: "booking",
-      attributes: ["userId", "bookingDate", "licensePlate", "bookingTime"],
+      attributes: ["bookingDate", "status"],
       where: whereBooking,
       include: {
         model: ServicePrice,

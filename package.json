@@ -8,15 +8,13 @@
     "dev": "nodemon app.js",
     "start": "node app.js"
   },
-
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "nodemon": "^3.1.9",
-    "sequelize-cli": "^6.6.2",
-    "swagger-autogen": "^2.23.7"
+    "sequelize-cli": "^6.6.2"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -35,7 +33,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^3.13.0",
     "sequelize": "^6.37.6",
-    "sharp": "^0.33.5",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
     "winston": "^3.17.0",

@@ -1,31 +1,35 @@
-const swaggerAutogen = require("swagger-autogen")();
-const fs = require("fs");
+const swaggerJsdoc = require("swagger-jsdoc");
 
-const doc = {
-  info: {
-    title: "Car Wash API",
-    description: "Dokumentasi API untuk layanan Car Wash",
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "APPLICATION PROGRAMMING INTERFACE (API)",
+      // Judul API
+
+      version: "1.0.0",
+      description:
+        "Dokumentasi API untuk layanan, harga, pengguna, dan lainnya.",
+    },
+    servers: [
+      {
+        url: "http://localhost:5000", // Ganti sesuai kebutuhan
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [{ bearerAuth: [] }],
   },
-  host: "localhost:5000",
-  schemes: ["http"],
-  basePath: "/api", // Pastikan API menggunakan prefix "/api"
+  apis: ["./routes/*.js"], // Path ke semua file route yang pakai Swagger
 };
 
-const outputFile = "./swagger-output.json";
-const routes = ["./routes/index.js"]; // Pastikan path ke file routes Anda benar
+const swaggerSpec = swaggerJsdoc(options);
 
-const generateSwagger = async () => {
-  try {
-    if (!fs.existsSync(outputFile)) {
-      console.log("⚡ Generating Swagger documentation...");
-      await swaggerAutogen(outputFile, routes, doc); // Tambahkan objek 'doc' sebagai argumen ketiga
-      console.log("✅ Swagger documentation generated!");
-    } else {
-      console.log("⚡ Menggunakan file Swagger yang sudah ada.");
-    }
-  } catch (error) {
-    console.error("❌ Gagal menghasilkan dokumentasi Swagger:", error);
-  }
-};
-
-module.exports = generateSwagger;
+module.exports = swaggerSpec;

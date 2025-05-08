@@ -324,21 +324,24 @@ exports.updateBookingStatus = asyncHandler(async (req, res) => {
 
 exports.deleteBooking = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const userId = req.user.id; // ✅ Ambil userId dari user yang login
+  const isAdmin = req.user.role?.name === "admin";
+  const userId = req.user.id;
 
-  // Cari booking berdasarkan ID dan pastikan hanya user terkait yang bisa menghapusnya
-  const booking = await Booking.findOne({ where: { id, userId } });
+  // Cari booking, admin bisa hapus semua, user hanya milik sendiri
+  const booking = await Booking.findOne({
+    where: isAdmin ? { id } : { id, userId },
+  });
+
   if (!booking) {
     return res
       .status(404)
       .json({ success: false, message: "Booking tidak ditemukan" });
   }
 
-  // Hapus booking
   await booking.destroy();
 
-  return res.status(204).json({
-    status: "success",
+  return res.status(200).json({
+    success: true,
     message: "Booking berhasil dihapus",
   });
 });

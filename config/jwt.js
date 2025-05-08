@@ -14,10 +14,10 @@ const createSendToken = (user, statusCode, res) => {
 
   // Opsi konfigurasi untuk cookie
   const cookieOptions = {
-    maxAge: process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000, // Konversi dari hari ke milidetik
-    httpOnly: true, // Cookie tidak bisa diakses oleh JavaScript (meningkatkan keamanan dari serangan XSS)
-    secure: process.env.NODE_ENV === "production", // Cookie hanya dikirim melalui HTTPS saat dalam mode produksi
-    sameSite: "Strict", // Mencegah pengiriman cookie ke situs lain (melindungi dari serangan CSRF)
+    maxAge: Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000, // Pastikan hasil akhir adalah number
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
   };
 
   // Mengatur cookie di response dengan nama 'jwt'
